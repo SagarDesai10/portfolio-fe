@@ -1,0 +1,128 @@
+<section class="contact-wrapper">
+  <!-- Three.js background -->
+  <canvas #bgCanvas class="bg-canvas"></canvas>
+
+  <!-- Page header -->
+  <header class="page-header">
+    <span class="header-accent">//</span>
+    <h1>Get In Touch</h1>
+    <p class="header-sub">Have a project in mind, or just want to say hi? I'd love to hear from you.</p>
+  </header>
+
+  <!-- Main layout -->
+  <div class="contact-layout">
+
+    <!-- ── Left: Social links ── -->
+    <aside class="social-panel">
+      <h2 class="panel-title">Connect with me</h2>
+
+      <div class="social-grid">
+        <a
+          *ngFor="let s of socialLinks"
+          class="social-card glass"
+          [href]="s.link"
+          target="_blank"
+          rel="noopener noreferrer"
+          [attr.aria-label]="s.name"
+        >
+          <div class="social-icon-wrap">
+            <img *ngIf="isIconUrl(s.icon)" [src]="s.icon" [alt]="s.name" class="social-img" />
+            <span *ngIf="!isIconUrl(s.icon)" class="social-emoji">{{ s.icon }}</span>
+          </div>
+          <span class="social-name">{{ s.name }}</span>
+          <span class="social-arrow">↗</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- ── Right: Contact form ── -->
+    <div class="form-panel glass">
+
+      <!-- Success state -->
+      <div *ngIf="formStatus === 'success'" class="form-feedback form-feedback--success">
+        <div class="feedback-icon">✅</div>
+        <h3>Message sent!</h3>
+        <p>Thanks for reaching out. I'll get back to you soon.</p>
+        <button class="btn-ghost" (click)="resetForm()">Send another</button>
+      </div>
+
+      <!-- Error state -->
+      <div *ngIf="formStatus === 'error'" class="form-feedback form-feedback--error">
+        <div class="feedback-icon">⚠️</div>
+        <h3>Something went wrong</h3>
+        <p>Couldn't send your message. Please try again.</p>
+        <button class="btn-ghost" (click)="resetForm()">Try again</button>
+      </div>
+
+      <!-- Form -->
+      <form
+        *ngIf="formStatus === 'idle' || formStatus === 'sending'"
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()"
+        novalidate
+        class="contact-form"
+      >
+        <h2 class="form-title">Send a message</h2>
+
+        <!-- Email field -->
+        <div class="field-group" [class.field-group--error]="email.invalid && email.touched">
+          <label class="field-label" for="email">
+            Your Email <span class="required-star">*</span>
+          </label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input
+              id="email"
+              type="email"
+              class="field-input"
+              formControlName="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+            />
+          </div>
+          <p *ngIf="email.invalid && email.touched" class="field-error">
+            {{ emailError }}
+          </p>
+        </div>
+
+        <!-- Message field -->
+        <div class="field-group" [class.field-group--error]="message.invalid && message.touched">
+          <label class="field-label" for="message">
+            Message <span class="required-star">*</span>
+          </label>
+          <div class="input-wrap input-wrap--textarea">
+            <span class="input-icon input-icon--top">💬</span>
+            <textarea
+              id="message"
+              class="field-input field-textarea"
+              formControlName="message"
+              placeholder="Tell me about your project or just say hello…"
+              rows="5"
+            ></textarea>
+          </div>
+          <div class="field-footer">
+            <p *ngIf="message.invalid && message.touched" class="field-error">
+              {{ messageError }}
+            </p>
+            <span class="char-counter" [class.char-counter--warn]="charCount > 900">
+              {{ charCount }} / 1000
+            </span>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="formStatus === 'sending'"
+        >
+          <span *ngIf="formStatus !== 'sending'">Send Message ✈️</span>
+          <span *ngIf="formStatus === 'sending'" class="sending-row">
+            <span class="btn-spinner"></span> Sending…
+          </span>
+        </button>
+      </form>
+
+    </div>
+  </div>
+</section>

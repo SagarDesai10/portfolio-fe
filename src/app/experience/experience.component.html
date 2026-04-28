@@ -1,0 +1,85 @@
+<section class="exp-wrapper">
+  <!-- Three.js background -->
+  <canvas #bgCanvas class="bg-canvas"></canvas>
+
+  <!-- Header -->
+  <header class="page-header">
+    <span class="header-accent">//</span>
+    <h1>Experience</h1>
+    <p class="header-sub">My professional journey so far</p>
+  </header>
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="loader-overlay">
+    <div class="spinner"></div>
+    <p>Loading experience…</p>
+  </div>
+
+  <!-- Timeline -->
+  <div *ngIf="!loading" class="timeline-container">
+
+    <!-- Left spine -->
+    <div class="timeline-spine"></div>
+
+    <div
+      *ngFor="let exp of experiences; let i = index"
+      class="timeline-item"
+      [class.timeline-item--active]="activeIndex === i"
+      [class.timeline-item--right]="i % 2 === 0"
+      [class.timeline-item--left]="i % 2 !== 0"
+    >
+      <!-- Connector dot -->
+      <div class="timeline-dot" [class.timeline-dot--present]="isPresent(exp.endMonthYear)">
+        <span class="dot-inner"></span>
+      </div>
+
+      <!-- Card -->
+      <div class="exp-card glass" (click)="toggle(i)">
+
+        <!-- Card header -->
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="company-badge">
+              {{ exp.companyName.charAt(0) }}
+            </div>
+            <div class="card-titles">
+              <h2 class="company-name">{{ exp.companyName }}</h2>
+              <p class="position">{{ exp.position }}</p>
+            </div>
+          </div>
+
+          <div class="card-header-right">
+            <div class="date-range">
+              <span class="date-start">{{ exp.startMonthYear }}</span>
+              <span class="date-sep">→</span>
+              <span class="date-end" [class.present]="isPresent(exp.endMonthYear)">
+                {{ exp.endMonthYear }}
+              </span>
+            </div>
+            <span class="duration">{{ getDuration(exp.startMonthYear, exp.endMonthYear) }}</span>
+            <span class="chevron" [class.chevron--open]="activeIndex === i">▾</span>
+          </div>
+        </div>
+
+        <!-- Expandable body -->
+        <div class="card-body" [class.card-body--open]="activeIndex === i">
+          <p class="about-text">{{ exp.about }}</p>
+          <ul class="point-list">
+            <li *ngFor="let point of exp.points" class="point-item">
+              <span class="point-dot"></span>
+              <span>{{ point }}</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- End cap -->
+    <div class="timeline-end">
+      <div class="end-dot">🎓</div>
+      <p>Where it all began</p>
+    </div>
+
+  </div>
+</section>

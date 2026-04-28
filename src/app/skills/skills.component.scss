@@ -1,0 +1,441 @@
+/* ============================================================
+   Design tokens
+   ============================================================ */
+:host {
+  --clr-bg: #0d0d1a;
+  --clr-glass: rgba(255, 255, 255, 0.055);
+  --clr-glass-border: rgba(255, 255, 255, 0.11);
+  --clr-primary: #7c3aed;
+  --clr-secondary: #06b6d4;
+  --clr-accent: #a855f7;
+  --clr-gold: #f59e0b;
+  --clr-text: #e2e8f0;
+  --clr-muted: #94a3b8;
+  --radius: 1.25rem;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   Wrapper
+   ============================================================ */
+.skills-wrapper {
+  position: relative;
+  min-height: 100vh;
+  background: var(--clr-bg);
+  color: var(--clr-text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   Three.js canvas
+   ============================================================ */
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================================
+   Loader
+   ============================================================ */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 10;
+  color: var(--clr-muted);
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(124, 58, 237, 0.2);
+    border-top-color: var(--clr-primary);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   Page header
+   ============================================================ */
+.page-header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 3.5rem 1.5rem 0;
+  animation: fadeDown 0.6s ease both;
+
+  .header-accent {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--clr-primary);
+    display: block;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.09em;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 30%, var(--clr-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 0.5rem;
+  }
+
+  .header-sub {
+    color: var(--clr-muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   Skills content
+   ============================================================ */
+.skills-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1060px;
+  margin: 2.5rem auto 5rem;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  animation: fadeUp 0.6s ease both;
+  animation-delay: 0.1s;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   Glass utility
+   ============================================================ */
+.glass {
+  background: var(--clr-glass);
+  border: 1px solid var(--clr-glass-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+}
+
+/* ============================================================
+   Category tabs
+   ============================================================ */
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--clr-glass-border);
+  background: var(--clr-glass);
+  color: var(--clr-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: all var(--transition);
+
+  .tab-icon { font-size: 0.9rem; }
+
+  .tab-count {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--clr-muted);
+    transition: all var(--transition);
+  }
+
+  &:hover {
+    border-color: rgba(124, 58, 237, 0.4);
+    color: var(--clr-text);
+    background: rgba(124, 58, 237, 0.1);
+  }
+
+  &--active {
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.4);
+
+    .tab-count {
+      background: rgba(255, 255, 255, 0.22);
+      color: #fff;
+    }
+  }
+}
+
+/* ============================================================
+   Skills grid
+   ============================================================ */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 1.1rem;
+}
+
+/* ============================================================
+   Skill card
+   ============================================================ */
+.skill-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.4rem 0.75rem 1.1rem;
+  text-align: center;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+  animation: popIn 0.4s ease both;
+  animation-delay: calc(var(--i, 0) * 0.03s);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+
+  /* shimmer overlay */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(6, 182, 212, 0.05));
+    opacity: 0;
+    transition: opacity var(--transition);
+    border-radius: inherit;
+  }
+
+  &:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
+    border-color: rgba(124, 58, 237, 0.4);
+
+    &::before { opacity: 1; }
+  }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.85) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Icon area */
+.skill-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--clr-glass-border);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.skill-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.skill-emoji-fallback {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.skill-emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+/* Name */
+.skill-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--clr-text);
+  margin: 0;
+  line-height: 1.3;
+  position: relative;
+  z-index: 1;
+}
+
+/* Category pill */
+.cat-pill {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  position: relative;
+  z-index: 1;
+  letter-spacing: 0.04em;
+
+  &--FE     { background: rgba(124, 58, 237, 0.18); color: #a78bfa; border: 1px solid rgba(124,58,237,0.3); }
+  &--BE     { background: rgba(6, 182, 212, 0.15);  color: #67e8f9; border: 1px solid rgba(6,182,212,0.3); }
+  &--DB     { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+  &--DevOps { background: rgba(34, 197, 94, 0.12);  color: #86efac; border: 1px solid rgba(34,197,94,0.25); }
+  &--DSA    { background: rgba(239, 68, 68, 0.12);  color: #fca5a5; border: 1px solid rgba(239,68,68,0.25); }
+  &--Tools  { background: rgba(168, 85, 247, 0.15); color: #c4b5fd; border: 1px solid rgba(168,85,247,0.3); }
+}
+
+/* Star rating */
+.star-row {
+  display: flex;
+  gap: 1px;
+  position: relative;
+  z-index: 1;
+}
+
+.star {
+  font-size: 0.9rem;
+  line-height: 1;
+
+  &--filled { color: var(--clr-gold); text-shadow: 0 0 4px rgba(245, 158, 11, 0.5); }
+  &--empty  { color: rgba(255, 255, 255, 0.15); }
+  &--sm     { font-size: 0.75rem; }
+}
+
+/* Empty state */
+.skills-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--clr-muted);
+  padding: 3rem 0;
+  font-size: 0.9rem;
+}
+
+/* ============================================================
+   Summary bar
+   ============================================================ */
+.summary-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  .summary-text {
+    font-size: 0.85rem;
+    color: var(--clr-muted);
+
+    strong { color: var(--clr-text); }
+  }
+
+  .summary-avg {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+    color: var(--clr-muted);
+  }
+
+  .avg-stars {
+    display: flex;
+    gap: 1px;
+  }
+}
+
+/* ============================================================
+   Responsive — tablet (< 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  .skills-content {
+    padding: 0 1rem;
+    margin: 2rem auto 4rem;
+    gap: 1.5rem;
+  }
+
+  .skills-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.85rem;
+  }
+
+  .page-header {
+    padding-top: 2.5rem;
+  }
+
+  .category-tabs {
+    gap: 0.45rem;
+  }
+
+  .tab-btn {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* ============================================================
+   Responsive — mobile (< 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  .skills-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.7rem;
+  }
+
+  .skill-card {
+    padding: 1rem 0.5rem 0.85rem;
+    gap: 0.45rem;
+  }
+
+  .skill-icon-wrap {
+    width: 44px;
+    height: 44px;
+  }
+
+  .skill-img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .skill-emoji { font-size: 1.5rem; }
+
+  .skill-name { font-size: 0.72rem; }
+
+  .tab-btn .tab-label { display: none; }
+  .tab-btn { padding: 0.45rem 0.65rem; }
+
+  .summary-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.85rem 1rem;
+  }
+}

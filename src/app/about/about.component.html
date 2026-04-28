@@ -1,0 +1,95 @@
+<section class="about-wrapper">
+  <!-- Three.js background -->
+  <canvas #bgCanvas class="bg-canvas"></canvas>
+
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loader-overlay">
+    <div class="spinner"></div>
+    <p>Loading…</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading && about" class="about-container">
+
+    <!-- Hero card -->
+    <div class="hero-card glass">
+      <div class="avatar-ring">
+        <div class="avatar-initials">{{ about.name.charAt(0) }}</div>
+      </div>
+
+      <div class="hero-info">
+        <h1 class="name">{{ about.name }}</h1>
+        <p class="role-badge">{{ about.role }}</p>
+        <p class="profession">{{ about.profession }}</p>
+      </div>
+    </div>
+
+    <!-- Stats strip -->
+    <div class="stats-strip">
+      <div class="stat-card glass">
+        <span class="stat-value">{{ about.yearsOfExperience }}+</span>
+        <span class="stat-label">Years Exp.</span>
+      </div>
+      <div class="stat-card glass">
+        <span class="stat-value">{{ about.educationalDegree }}</span>
+        <span class="stat-label">Degree</span>
+      </div>
+      <div class="stat-card glass">
+        <span class="stat-value location-icon">📍</span>
+        <span class="stat-label">{{ about.location }}</span>
+      </div>
+      <div class="stat-card glass">
+        <span class="stat-value email-icon">✉️</span>
+        <span class="stat-label">{{ about.email }}</span>
+      </div>
+    </div>
+
+    <!-- About section -->
+    <div class="about-section glass">
+      <h2 class="section-title">
+        <span class="title-accent">//</span> About Me
+      </h2>
+      <p class="about-paragraph">{{ about.about.paragraph }}</p>
+
+      <ul class="about-points">
+        <li *ngFor="let point of about.about.points" class="point-item">
+          <span class="point-dot"></span>
+          <span>{{ point }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Details grid -->
+    <div class="details-grid">
+      <div class="detail-card glass">
+        <span class="detail-icon">🎓</span>
+        <div>
+          <p class="detail-label">Education</p>
+          <p class="detail-value">{{ about.educationalDegree }}</p>
+        </div>
+      </div>
+      <div class="detail-card glass">
+        <span class="detail-icon">💼</span>
+        <div>
+          <p class="detail-label">Role</p>
+          <p class="detail-value">{{ about.role }}</p>
+        </div>
+      </div>
+      <div class="detail-card glass">
+        <span class="detail-icon">📍</span>
+        <div>
+          <p class="detail-label">Location</p>
+          <p class="detail-value">{{ about.location }}</p>
+        </div>
+      </div>
+      <div class="detail-card glass">
+        <span class="detail-icon">✉️</span>
+        <div>
+          <p class="detail-label">Email</p>
+          <p class="detail-value">{{ about.email }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

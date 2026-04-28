@@ -1,0 +1,120 @@
+<section class="edu-wrapper">
+  <!-- Three.js background -->
+  <canvas #bgCanvas class="bg-canvas"></canvas>
+
+  <!-- Page header -->
+  <header class="page-header">
+    <span class="header-accent">//</span>
+    <h1>Education</h1>
+    <p class="header-sub">Academic milestones that shaped me</p>
+  </header>
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="loader-overlay">
+    <div class="spinner"></div>
+    <p>Loading education…</p>
+  </div>
+
+  <!-- Cards -->
+  <div *ngIf="!loading" class="edu-grid">
+
+    <div
+      *ngFor="let rec of records; let i = index"
+      class="edu-card glass"
+      [class.edu-card--active]="activeIndex === i"
+      [style.--delay]="i * 0.1 + 's'"
+      (click)="toggle(i)"
+    >
+      <!-- Card top strip (coloured gradient bar) -->
+      <div class="card-strip" [attr.data-index]="i"></div>
+
+      <!-- Card header -->
+      <div class="card-header">
+        <!-- Left: icon + titles -->
+        <div class="card-left">
+          <div class="edu-icon" [attr.data-index]="i">
+            {{ getIcon(i) }}
+          </div>
+          <div class="card-titles">
+            <h2 class="stream-name">{{ rec.streamName }}</h2>
+            <p class="institution">{{ rec.institutionName }}</p>
+          </div>
+        </div>
+
+        <!-- Right: years, marks, chevron -->
+        <div class="card-right">
+          <div class="year-range">
+            <span class="year">{{ rec.startYear }}</span>
+            <span class="year-sep">―</span>
+            <span class="year" [class.present]="isPresent(rec.endYear)">{{ rec.endYear }}</span>
+          </div>
+          <span class="marks-badge">{{ rec.marks }}</span>
+          <span class="duration-pill">{{ getDuration(rec.startYear, rec.endYear) }} yr{{ getDuration(rec.startYear, rec.endYear) !== 1 ? 's' : '' }}</span>
+          <span class="chevron" [class.chevron--open]="activeIndex === i">▾</span>
+        </div>
+      </div>
+
+      <!-- Expandable body -->
+      <div class="card-body" [class.card-body--open]="activeIndex === i">
+        <div class="divider"></div>
+        <ul class="point-list">
+          <li *ngFor="let pt of rec.points" class="point-item">
+            <span class="point-dot"></span>
+            <span>{{ pt }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ Certifications Section ══════════════ -->
+  <div *ngIf="!loading && certifications.length" class="cert-section">
+
+    <div class="cert-section-header">
+      <div class="cert-title-group">
+        <span class="header-accent">//</span>
+        <h2>Certifications</h2>
+        <span class="cert-count-badge">{{ certifications.length }}</span>
+      </div>
+      <div class="cert-search-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+          class="cert-search"
+          type="text"
+          placeholder="Filter by skill, name or year…"
+          [value]="certFilter"
+          (input)="onCertFilter($event)"
+        />
+      </div>
+    </div>
+
+    <div *ngIf="filteredCerts.length === 0" class="cert-empty">
+      No certifications match "{{ certFilter }}"
+    </div>
+
+    <div class="cert-grid">
+      <a
+        *ngFor="let cert of filteredCerts; let i = index"
+        class="cert-card glass"
+        [href]="cert.link"
+        target="_blank"
+        rel="noopener noreferrer"
+        [style.--cert-delay]="i * 0.06 + 's'"
+      >
+        <div class="cert-card-top">
+          <span class="cert-skill-badge">{{ cert.techSkill }}</span>
+          <span class="cert-year">{{ cert.year }}</span>
+        </div>
+        <p class="cert-name">{{ cert.certificationName }}</p>
+        <div class="cert-link-row">
+          <span class="cert-link-icon">🔗</span>
+          <span class="cert-link-text">View Certificate</span>
+          <span class="cert-arrow">↗</span>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+</section>

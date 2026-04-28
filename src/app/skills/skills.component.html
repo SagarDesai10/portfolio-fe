@@ -1,0 +1,100 @@
+<section class="skills-wrapper">
+  <!-- Three.js background -->
+  <canvas #bgCanvas class="bg-canvas"></canvas>
+
+  <!-- Page header -->
+  <header class="page-header">
+    <span class="header-accent">//</span>
+    <h1>Skills</h1>
+    <p class="header-sub">Technologies and tools I work with</p>
+  </header>
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="loader-overlay">
+    <div class="spinner"></div>
+    <p>Loading skills…</p>
+  </div>
+
+  <div *ngIf="!loading" class="skills-content">
+
+    <!-- Category tabs -->
+    <div class="category-tabs" role="tablist">
+      <button
+        *ngFor="let cat of categories"
+        class="tab-btn"
+        [class.tab-btn--active]="activeCategory === cat.key"
+        (click)="selectCategory(cat.key)"
+        [attr.aria-selected]="activeCategory === cat.key"
+        role="tab"
+      >
+        <span class="tab-icon">{{ cat.icon }}</span>
+        <span class="tab-label">{{ cat.label }}</span>
+        <span class="tab-count">{{ countFor(cat.key) }}</span>
+      </button>
+    </div>
+
+    <!-- Skills grid -->
+    <div class="skills-grid" role="tabpanel">
+      <div
+        *ngFor="let skill of filteredSkills; let i = index; trackBy: trackByName"
+        class="skill-card glass"
+        [style.--i]="i"
+      >
+        <!-- Icon -->
+        <div class="skill-icon-wrap">
+          <img
+            *ngIf="!isEmoji(skill.img)"
+            [src]="skill.img"
+            [alt]="skill.name"
+            class="skill-img"
+            loading="lazy"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+          />
+          <!-- Fallback shown if image errors -->
+          <div class="skill-emoji-fallback" [style.display]="'none'">
+            {{ skill.name.charAt(0) }}
+          </div>
+          <span *ngIf="isEmoji(skill.img)" class="skill-emoji">{{ skill.img }}</span>
+        </div>
+
+        <!-- Name -->
+        <p class="skill-name">{{ skill.name }}</p>
+
+        <!-- Category pill -->
+        <span class="cat-pill cat-pill--{{ skill.category }}">{{ skill.category }}</span>
+
+        <!-- Star rating -->
+        <div class="star-row" [attr.aria-label]="skill.stars + ' out of 5 stars'">
+          <span
+            *ngFor="let s of stars(skill.stars)"
+            class="star star--filled"
+          >★</span>
+          <span
+            *ngFor="let s of emptyStars(skill.stars)"
+            class="star star--empty"
+          >★</span>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="filteredSkills.length === 0" class="skills-empty">
+        No skills found for this category.
+      </div>
+    </div>
+
+    <!-- Summary bar -->
+    <div class="summary-bar glass">
+      <span class="summary-text">
+        Showing <strong>{{ filteredSkills.length }}</strong> of <strong>{{ allSkills.length }}</strong> skills
+      </span>
+      <div class="summary-avg">
+        <span>Avg. proficiency</span>
+        <div class="avg-stars">
+          <span *ngFor="let s of stars(avgStars)" class="star star--filled star--sm">★</span>
+          <span *ngFor="let s of emptyStars(avgStars)" class="star star--empty star--sm">★</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
