@@ -1,0 +1,180 @@
+<div class="admin-shell">
+  <canvas #bgCanvas class="bg-canvas"></canvas>
+
+  <!-- ══════════════ NAV ══════════════ -->
+  <nav class="admin-nav">
+    <span class="admin-nav__brand">Admin / Projects</span>
+    <div class="admin-nav__actions">
+      <a routerLink="/projects" class="btn-ghost">← View Public Page</a>
+      <button class="btn-ghost" (click)="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+
+    <!-- ── Alerts ─────────────────────────────────────────── -->
+    <div *ngIf="successMsg" class="alert alert--success">✅ {{ successMsg }}</div>
+    <div *ngIf="errorMsg"   class="alert alert--error">⚠️ {{ errorMsg }}</div>
+
+    <!-- ══════════════ LIST MODE ══════════════ -->
+    <ng-container *ngIf="mode === 'list'">
+
+      <!-- Loading -->
+      <div *ngIf="fetchStatus === 'loading'" class="state-box">
+        <div class="spinner"></div>
+        <p class="state-box__sub">Loading projects…</p>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="fetchStatus === 'error'" class="state-box glass">
+        <div class="state-box__icon">⚠️</div>
+        <p class="state-box__title">Failed to load projects</p>
+        <button class="btn-primary" (click)="load()">Retry</button>
+      </div>
+
+      <!-- List -->
+      <ng-container *ngIf="fetchStatus === 'success'">
+
+        <div class="list-header">
+          <h2 class="list-title">
+            Projects <span class="list-count">{{ projects.length }}</span>
+          </h2>
+          <button class="btn-primary" (click)="enterCreate()">+ Add Project</button>
+        </div>
+
+        <!-- Empty -->
+        <div *ngIf="projects.length === 0" class="state-box glass">
+          <div class="state-box__icon">🚀</div>
+          <p class="state-box__title">No projects yet</p>
+          <p class="state-box__sub">Add your first project to get started.</p>
+          <button class="btn-primary" (click)="enterCreate()">+ Add Project</button>
+        </div>
+
+        <!-- Cards -->
+        <div *ngIf="projects.length > 0" class="project-grid">
+          <div *ngFor="let item of projects" class="project-card glass">
+
+            <div class="project-card__header">
+              <div class="project-card__meta">
+                <span class="category-badge">{{ item.category }}</span>
+              </div>
+              <div class="project-card__actions">
+                <button class="btn-icon btn-icon--edit" (click)="enterEdit(item)" title="Edit">✏️ Edit</button>
+                <button
+                  class="btn-icon btn-icon--delete"
+                  (click)="confirmDelete(item)"
+                  [disabled]="deletingId === item.id"
+                  title="Delete"
+                >
+                  <span *ngIf="deletingId !== item.id">🗑️ Delete</span>
+                  <span *ngIf="deletingId === item.id" class="sending-row">
+                    <span class="btn-spinner"></span>Deleting…
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <h3 class="project-card__name">{{ item.name }}</h3>
+            <p *ngIf="item.description" class="project-card__desc">{{ item.description }}</p>
+
+            <div *ngIf="item.keyTech?.length" class="tech-chips">
+              <span *ngFor="let t of item.keyTech" class="tech-chip">{{ t }}</span>
+            </div>
+
+            <div class="project-card__links">
+              <a *ngIf="item.githubLink" [href]="item.githubLink" target="_blank" rel="noopener noreferrer" class="link-pill">
+                🔗 GitHub
+              </a>
+              <a *ngIf="item.liveLink" [href]="item.liveLink" target="_blank" rel="noopener noreferrer" class="link-pill link-pill--live">
+                🌐 Live
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+      </ng-container>
+    </ng-container>
+
+    <!-- ══════════════ CREATE / EDIT MODE ══════════════ -->
+    <div *ngIf="mode === 'create' || mode === 'edit'" class="form-card glass">
+
+      <div class="form-card-header">
+        <h2>{{ mode === 'create' ? '➕ Add Project' : '✏️ Edit Project' }}</h2>
+        <button class="btn-ghost" (click)="cancelForm()">✕ Cancel</button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="admin-form">
+
+        <!-- Row 1: name / category -->
+        <div class="form-row">
+          <div class="field-group" [class.field-group--error]="form.get('name')?.invalid && form.get('name')?.touched">
+            <label class="field-label">Project Name *</label>
+            <input class="field-input" formControlName="name" placeholder="My Awesome App" />
+            <p *ngIf="fieldError('name')" class="field-error">{{ fieldError('name') }}</p>
+          </div>
+          <div class="field-group" [class.field-group--error]="form.get('category')?.invalid && form.get('category')?.touched">
+            <label class="field-label">Category *</label>
+            <input class="field-input" formControlName="category" placeholder="Full Stack / Frontend / Backend / POC" />
+            <p *ngIf="fieldError('category')" class="field-error">{{ fieldError('category') }}</p>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="field-group">
+          <label class="field-label">Description <span class="optional">(optional)</span></label>
+          <textarea class="field-input field-textarea" formControlName="description" placeholder="Brief description of the project…" rows="3"></textarea>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="field-group">
+          <label class="field-label">Key Technologies</label>
+          <div class="tech-input-row">
+            <input
+              class="field-input"
+              [(ngModel)]="techInput"
+              [ngModelOptions]="{standalone: true}"
+              placeholder="Type a tech and press Enter or Add"
+              (keydown.enter)="addTechOnEnter($event)"
+            />
+            <button type="button" class="btn-add-tech" (click)="addTech()">Add</button>
+          </div>
+          <div *ngIf="keyTechArray.length > 0" class="tech-chips tech-chips--editable">
+            <span *ngFor="let ctrl of keyTechArray.controls; let i = index" class="tech-chip tech-chip--removable">
+              {{ ctrl.value }}
+              <button type="button" class="tech-chip__remove" (click)="removeTech(i)" title="Remove">✕</button>
+            </span>
+          </div>
+        </div>
+
+        <!-- Row 2: github / live links -->
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">GitHub Link <span class="optional">(optional)</span></label>
+            <input class="field-input" formControlName="githubLink" placeholder="https://github.com/…" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Live Link <span class="optional">(optional)</span></label>
+            <input class="field-input" formControlName="liveLink" placeholder="https://myapp.vercel.app" />
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="form-footer">
+          <button type="button" class="btn-ghost" (click)="cancelForm()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="saveStatus === 'loading'">
+            <span *ngIf="saveStatus !== 'loading'">
+              {{ mode === 'create' ? '✅ Create' : '💾 Save Changes' }}
+            </span>
+            <span *ngIf="saveStatus === 'loading'" class="sending-row">
+              <span class="btn-spinner"></span>
+              {{ mode === 'create' ? 'Creating…' : 'Saving…' }}
+            </span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </main>
+</div>

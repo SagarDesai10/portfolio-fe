@@ -1,0 +1,202 @@
+<div class="admin-wrapper">
+  <canvas #bgCanvas class="bg-canvas"></canvas>
+
+  <!-- Top Nav -->
+  <nav class="admin-nav glass">
+    <div class="nav-brand">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-title">Admin <span class="nav-slash">/</span> About</span>
+    </div>
+    <div class="nav-actions">
+      <a class="nav-link" routerLink="/about">← View Public Page</a>
+      <button class="btn-logout" (click)="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <main class="admin-main">
+
+    <!-- ── Alert messages ── -->
+    <div *ngIf="successMsg" class="alert alert--success">✅ {{ successMsg }}</div>
+    <div *ngIf="errorMsg"   class="alert alert--error">⚠️ {{ errorMsg }}</div>
+
+    <!-- ══════════════ VIEW MODE ══════════════ -->
+    <ng-container *ngIf="mode === 'view'">
+
+      <!-- Loading -->
+      <div *ngIf="fetchStatus === 'loading'" class="center-state">
+        <div class="spinner"></div>
+        <p>Fetching about record…</p>
+      </div>
+
+      <!-- No record yet -->
+      <div *ngIf="fetchStatus !== 'loading' && !currentData" class="empty-state glass">
+        <div class="empty-icon">📭</div>
+        <h2>No About record found</h2>
+        <p>Create one to get started.</p>
+        <button class="btn-primary" (click)="enterCreate()">+ Create About</button>
+      </div>
+
+      <!-- Record display -->
+      <div *ngIf="currentData" class="view-card glass">
+
+        <div class="view-card-header">
+          <div>
+            <h2 class="view-name">{{ currentData.name }}</h2>
+            <p class="view-sub">{{ currentData.role }} · {{ currentData.profession }}</p>
+          </div>
+          <div class="view-actions">
+            <button class="btn-icon btn-icon--edit" (click)="enterEdit()" title="Edit">✏️ Edit</button>
+            <button
+              class="btn-icon btn-icon--delete"
+              (click)="confirmDelete()"
+              [disabled]="deleteStatus === 'loading'"
+              title="Delete"
+            >
+              <span *ngIf="deleteStatus !== 'loading'">🗑️ Delete</span>
+              <span *ngIf="deleteStatus === 'loading'">Deleting…</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">{{ currentData.email }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Location</span>
+            <span class="detail-value">{{ currentData.location }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Experience</span>
+            <span class="detail-value">{{ currentData.experience }} yr(s)</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Degree</span>
+            <span class="detail-value">{{ currentData.degree }}</span>
+          </div>
+        </div>
+
+        <div class="about-section">
+          <span class="detail-label">About Points</span>
+          <ul class="about-list">
+            <li *ngFor="let p of currentData.about" class="about-list-item">
+              <span class="about-dot"></span>{{ p }}
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Create button when data exists -->
+      <div *ngIf="currentData" class="create-hint">
+        <button class="btn-ghost" (click)="enterCreate()">+ Create new record (replaces existing)</button>
+      </div>
+
+    </ng-container>
+
+    <!-- ══════════════ CREATE / EDIT MODE ══════════════ -->
+    <div *ngIf="mode === 'create' || mode === 'edit'" class="form-card glass">
+
+      <div class="form-card-header">
+        <h2>{{ mode === 'create' ? '➕ Create About' : '✏️ Edit About' }}</h2>
+        <button class="btn-ghost" (click)="cancelEdit()">✕ Cancel</button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="admin-form">
+
+        <!-- Row 1: name / profession -->
+        <div class="form-row">
+          <div class="field-group" [class.field-group--error]="form.get('name')?.invalid && form.get('name')?.touched">
+            <label class="field-label">Name *</label>
+            <input class="field-input" formControlName="name" placeholder="Sagar Desai" />
+            <p *ngIf="fieldError('name')" class="field-error">{{ fieldError('name') }}</p>
+          </div>
+          <div class="field-group" [class.field-group--error]="form.get('profession')?.invalid && form.get('profession')?.touched">
+            <label class="field-label">Profession *</label>
+            <input class="field-input" formControlName="profession" placeholder="Software Developer" />
+            <p *ngIf="fieldError('profession')" class="field-error">{{ fieldError('profession') }}</p>
+          </div>
+        </div>
+
+        <!-- Row 2: email / role -->
+        <div class="form-row">
+          <div class="field-group" [class.field-group--error]="form.get('email')?.invalid && form.get('email')?.touched">
+            <label class="field-label">Email *</label>
+            <input class="field-input" type="email" formControlName="email" placeholder="you@example.com" />
+            <p *ngIf="fieldError('email')" class="field-error">{{ fieldError('email') }}</p>
+          </div>
+          <div class="field-group" [class.field-group--error]="form.get('role')?.invalid && form.get('role')?.touched">
+            <label class="field-label">Role *</label>
+            <input class="field-input" formControlName="role" placeholder="Full Stack Developer & System Thinker" />
+            <p *ngIf="fieldError('role')" class="field-error">{{ fieldError('role') }}</p>
+          </div>
+        </div>
+
+        <!-- Row 3: degree / experience / location -->
+        <div class="form-row form-row--3">
+          <div class="field-group" [class.field-group--error]="form.get('degree')?.invalid && form.get('degree')?.touched">
+            <label class="field-label">Degree *</label>
+            <input class="field-input" formControlName="degree" placeholder="B.E. Computer Engineering" />
+            <p *ngIf="fieldError('degree')" class="field-error">{{ fieldError('degree') }}</p>
+          </div>
+          <div class="field-group" [class.field-group--error]="form.get('experience')?.invalid && form.get('experience')?.touched">
+            <label class="field-label">Experience (yrs) *</label>
+            <input class="field-input" type="number" min="0" step="0.5" formControlName="experience" placeholder="4" />
+            <p *ngIf="fieldError('experience')" class="field-error">{{ fieldError('experience') }}</p>
+          </div>
+          <div class="field-group" [class.field-group--error]="form.get('location')?.invalid && form.get('location')?.touched">
+            <label class="field-label">Location *</label>
+            <input class="field-input" formControlName="location" placeholder="Pune, India" />
+            <p *ngIf="fieldError('location')" class="field-error">{{ fieldError('location') }}</p>
+          </div>
+        </div>
+
+        <!-- About points (dynamic) -->
+        <div class="field-group">
+          <div class="about-points-header">
+            <label class="field-label">About Points *</label>
+            <button type="button" class="btn-add-point" (click)="addAboutPoint()">+ Add Point</button>
+          </div>
+          <div formArrayName="about" class="about-points-list">
+            <div
+              *ngFor="let ctrl of aboutArray.controls; let i = index"
+              class="about-point-row"
+            >
+              <span class="point-num">{{ i + 1 }}</span>
+              <textarea
+                class="field-input field-textarea"
+                [formControlName]="i"
+                placeholder="Describe something about yourself…"
+                rows="2"
+              ></textarea>
+              <button
+                type="button"
+                class="btn-remove-point"
+                (click)="removeAboutPoint(i)"
+                [disabled]="aboutArray.length === 1"
+                title="Remove"
+              >✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="form-footer">
+          <button type="button" class="btn-ghost" (click)="cancelEdit()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="saveStatus === 'loading'">
+            <span *ngIf="saveStatus !== 'loading'">
+              {{ mode === 'create' ? '✅ Create' : '💾 Save Changes' }}
+            </span>
+            <span *ngIf="saveStatus === 'loading'" class="sending-row">
+              <span class="btn-spinner"></span>
+              {{ mode === 'create' ? 'Creating…' : 'Saving…' }}
+            </span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </main>
+</div>

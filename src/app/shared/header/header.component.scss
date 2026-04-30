@@ -1,0 +1,177 @@
+/* ── Tokens ─────────────────────────────────────────────────────────────── */
+:host {
+  --clr-bg:        #0d0d1a;
+  --clr-glass:     rgba(255, 255, 255, 0.05);
+  --clr-border:    rgba(255, 255, 255, 0.1);
+  --clr-primary:   #7c3aed;
+  --clr-secondary: #06b6d4;
+  --clr-text:      #e2e8f0;
+  --clr-muted:     #94a3b8;
+  --transition:    0.25s ease;
+}
+
+/* ── Header shell ───────────────────────────────────────────────────────── */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(13, 13, 26, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+
+  &--scrolled {
+    background: rgba(13, 13, 26, 0.96);
+    border-bottom-color: rgba(124, 58, 237, 0.35);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ── Inner row ──────────────────────────────────────────────────────────── */
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 64px;
+}
+
+/* ── Brand ──────────────────────────────────────────────────────────────── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.05em;
+  text-decoration: none;
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+
+  &__bracket {
+    color: var(--clr-primary);
+    opacity: 0.7;
+    font-weight: 400;
+  }
+
+  &__name {
+    color: #e2e8f0;
+    padding: 0 0.15em;
+  }
+
+  &__accent {
+    color: var(--clr-primary);
+    padding: 0 0.15em;
+  }
+}
+
+/* ── Desktop nav ────────────────────────────────────────────────────────── */
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  @media (max-width: 768px) { display: none; }
+}
+
+.nav-link {
+  position: relative;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  color: var(--clr-muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  font-family: 'Inter', system-ui, sans-serif;
+  transition: color var(--transition), background var(--transition);
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 60%;
+    height: 2px;
+    background: var(--clr-primary);
+    border-radius: 2px;
+    transition: transform var(--transition);
+  }
+
+  &:hover {
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &--active {
+    color: #e2e8f0;
+
+    &::after { transform: translateX(-50%) scaleX(1); }
+  }
+}
+
+/* ── Hamburger ──────────────────────────────────────────────────────────── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--clr-border);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 0 8px;
+
+  span {
+    display: block;
+    height: 2px;
+    background: var(--clr-text);
+    border-radius: 2px;
+    transition: transform var(--transition), opacity var(--transition), width var(--transition);
+  }
+
+  &--open {
+    span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    span:nth-child(2) { opacity: 0; }
+    span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  }
+
+  @media (max-width: 768px) { display: flex; }
+}
+
+/* ── Mobile nav drawer ──────────────────────────────────────────────────── */
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  padding: 0.5rem 1.5rem 1rem;
+  gap: 0.25rem;
+  border-top: 1px solid var(--clr-border);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding var(--transition);
+
+  &--open {
+    max-height: 400px;
+    display: flex;
+  }
+
+  .nav-link {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.95rem;
+
+    &::after { display: none; }
+
+    &--active {
+      background: rgba(124, 58, 237, 0.12);
+      color: #c4b5fd;
+    }
+  }
+
+  @media (max-width: 768px) { display: flex; }
+}

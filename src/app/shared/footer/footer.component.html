@@ -1,0 +1,43 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+
+    <!-- Brand block -->
+    <div class="footer-brand">
+      <a routerLink="/about" class="brand">
+        <span class="brand__bracket">&lt;</span>
+        <span class="brand__name">Sagar</span>
+        <span class="brand__accent">Desai</span>
+        <span class="brand__bracket">/&gt;</span>
+      </a>
+      <p class="footer-brand__tagline">Full Stack Developer &amp; System Thinker</p>
+    </div>
+
+    <!-- Quick links -->
+    <nav class="footer-links">
+      <span class="footer-links__heading">Quick Links</span>
+      <a
+        *ngFor="let link of quickLinks"
+        [routerLink]="link.path"
+        class="footer-link"
+      >{{ link.label }}</a>
+    </nav>
+
+    <!-- Built with -->
+    <div class="footer-built">
+      <span class="footer-links__heading">Built With</span>
+      <div class="tech-pills">
+        <span class="tech-pill">Angular 19</span>
+        <span class="tech-pill">Three.js</span>
+        <span class="tech-pill">SCSS</span>
+        <span class="tech-pill">Spring Boot</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="footer-bottom">
+    <p>&copy; {{ year }} Sagar Desai. All rights reserved.</p>
+    <p class="footer-bottom__love">Crafted with ❤️ &amp; ☕</p>
+  </div>
+</footer>
