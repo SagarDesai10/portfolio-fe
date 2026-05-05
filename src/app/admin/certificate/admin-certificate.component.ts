@@ -13,11 +13,9 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import * as THREE from 'three';
 import { AdminCertificateService } from '../../core/services/admin-certificate.service';
 import { CertificateDTO } from '../../core/models/certificate-dto.model';
-import { AuthService } from '../../core/services/auth.service';
 
 type FormMode = 'list' | 'create' | 'edit';
 type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -25,7 +23,7 @@ type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
 @Component({
   selector: 'app-admin-certificate',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './admin-certificate.component.html',
   styleUrls: ['./admin-certificate.component.scss'],
 })
@@ -58,7 +56,6 @@ export class AdminCertificateComponent implements OnInit, AfterViewInit, OnDestr
   constructor(
     private fb: FormBuilder,
     private certService: AdminCertificateService,
-    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -191,7 +188,6 @@ export class AdminCertificateComponent implements OnInit, AfterViewInit, OnDestr
     });
   }
 
-  logout(): void { this.authService.logout(); }
 
   // ── Helpers ────────────────────────────────────────────────
 

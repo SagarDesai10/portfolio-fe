@@ -13,11 +13,9 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import * as THREE from 'three';
 import { AdminSkillService } from '../../core/services/admin-skill.service';
 import { SkillDTO } from '../../core/models/skill-dto.model';
-import { AuthService } from '../../core/services/auth.service';
 
 type FormMode = 'list' | 'create' | 'edit';
 type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -25,7 +23,7 @@ type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
 @Component({
   selector: 'app-admin-skill',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './admin-skill.component.html',
   styleUrls: ['./admin-skill.component.scss'],
 })
@@ -62,7 +60,6 @@ export class AdminSkillComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private skillService: AdminSkillService,
-    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -210,7 +207,6 @@ export class AdminSkillComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  logout(): void { this.authService.logout(); }
 
   // ── Helpers ────────────────────────────────────────────────
 

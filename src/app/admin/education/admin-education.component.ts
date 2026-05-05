@@ -14,11 +14,9 @@ import {
   FormArray,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import * as THREE from 'three';
 import { AdminEducationService } from '../../core/services/admin-education.service';
 import { EducationDTO } from '../../core/models/education-dto.model';
-import { AuthService } from '../../core/services/auth.service';
 
 type FormMode = 'list' | 'create' | 'edit';
 type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -26,7 +24,7 @@ type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
 @Component({
   selector: 'app-admin-education',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './admin-education.component.html',
   styleUrls: ['./admin-education.component.scss'],
 })
@@ -59,7 +57,6 @@ export class AdminEducationComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(
     private fb: FormBuilder,
     private eduService: AdminEducationService,
-    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -210,7 +207,6 @@ export class AdminEducationComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  logout(): void { this.authService.logout(); }
 
   // ── Helpers ────────────────────────────────────────────────
 

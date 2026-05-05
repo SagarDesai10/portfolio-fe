@@ -14,12 +14,10 @@ import {
   FormArray,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import * as THREE from 'three';
 import { AdminProjectService } from '../../core/services/admin-project.service';
 import { ProjectDTO } from '../../core/models/project-dto.model';
-import { AuthService } from '../../core/services/auth.service';
 
 type FormMode = 'list' | 'create' | 'edit';
 type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -27,7 +25,7 @@ type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
 @Component({
   selector: 'app-admin-project',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './admin-project.component.html',
   styleUrls: ['./admin-project.component.scss'],
 })
@@ -63,7 +61,6 @@ export class AdminProjectComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private projectService: AdminProjectService,
-    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -221,7 +218,6 @@ export class AdminProjectComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  logout(): void { this.authService.logout(); }
 
   // ── Helpers ────────────────────────────────────────────────
 

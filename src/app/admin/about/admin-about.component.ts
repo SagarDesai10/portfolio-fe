@@ -17,8 +17,6 @@ import {
 import * as THREE from 'three';
 import { AdminAboutService } from '../../core/services/admin-about.service';
 import { AboutDTO } from '../../core/models/about-dto.model';
-import { AuthService } from '../../core/services/auth.service';
-import { Router } from '@angular/router';
 
 type ViewMode = 'view' | 'create' | 'edit';
 type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -57,8 +55,6 @@ export class AdminAboutComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private adminAboutService: AdminAboutService,
-    private authService: AuthService,
-    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -207,8 +203,6 @@ export class AdminAboutComponent implements OnInit, AfterViewInit, OnDestroy {
       },
     });
   }
-
-  logout(): void { this.authService.logout(); }
 
   // ── Helpers ────────────────────────────────────────────────
 

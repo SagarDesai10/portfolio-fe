@@ -9,7 +9,7 @@ import { ResponseDTO } from '../models/api-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class SkillsService {
-  private readonly base = `${environment.apiBaseUrl}/skill`;
+  private readonly base = `${environment.apiBaseUrl}/skills`;
 
   constructor(private http: HttpClient) {}
 

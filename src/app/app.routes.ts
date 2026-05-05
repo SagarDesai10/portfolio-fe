@@ -6,6 +6,7 @@ import { ContactComponent } from './contact/contact.component';
 import { SkillsComponent } from './skills/skills.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { LoginComponent } from './login/login.component';
+import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.component';
 import { AdminAboutComponent } from './admin/about/admin-about.component';
 import { AdminCertificateComponent } from './admin/certificate/admin-certificate.component';
 import { AdminEducationComponent } from './admin/education/admin-education.component';
@@ -24,11 +25,19 @@ export const routes: Routes = [
   { path: 'contact',    component: ContactComponent },
   { path: 'skills',     component: SkillsComponent },
   { path: 'projects',   component: ProjectsComponent },
-  { path: 'admin/about',        component: AdminAboutComponent,        canActivate: [authGuard] },
-  { path: 'admin/certificate',  component: AdminCertificateComponent,  canActivate: [authGuard] },
-  { path: 'admin/education',    component: AdminEducationComponent,    canActivate: [authGuard] },
-  { path: 'admin/experience',   component: AdminExperienceComponent,   canActivate: [authGuard] },
-  { path: 'admin/project',      component: AdminProjectComponent,      canActivate: [authGuard] },
-  { path: 'admin/skill',        component: AdminSkillComponent,        canActivate: [authGuard] },
-  { path: 'admin/social-link',  component: AdminSocialLinkComponent,   canActivate: [authGuard] },
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    canActivate: [authGuard],
+    children: [
+      { path: '',            redirectTo: 'about', pathMatch: 'full' },
+      { path: 'about',       component: AdminAboutComponent },
+      { path: 'certificate', component: AdminCertificateComponent },
+      { path: 'education',   component: AdminEducationComponent },
+      { path: 'experience',  component: AdminExperienceComponent },
+      { path: 'project',     component: AdminProjectComponent },
+      { path: 'skill',       component: AdminSkillComponent },
+      { path: 'social-link', component: AdminSocialLinkComponent },
+    ],
+  },
 ];

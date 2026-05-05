@@ -13,11 +13,9 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import * as THREE from 'three';
 import { AdminSocialLinkService } from '../../core/services/admin-social-link.service';
 import { SocialDTO } from '../../core/models/social-dto.model';
-import { AuthService } from '../../core/services/auth.service';
 
 type FormMode = 'list' | 'create' | 'edit';
 type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -25,7 +23,7 @@ type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
 @Component({
   selector: 'app-admin-social-link',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './admin-social-link.component.html',
   styleUrls: ['./admin-social-link.component.scss'],
 })
@@ -58,7 +56,6 @@ export class AdminSocialLinkComponent implements OnInit, AfterViewInit, OnDestro
   constructor(
     private fb: FormBuilder,
     private socialService: AdminSocialLinkService,
-    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -190,7 +187,6 @@ export class AdminSocialLinkComponent implements OnInit, AfterViewInit, OnDestro
     });
   }
 
-  logout(): void { this.authService.logout(); }
 
   // ── Helpers ────────────────────────────────────────────────
 

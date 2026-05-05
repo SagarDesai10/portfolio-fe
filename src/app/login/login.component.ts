@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     // Already logged in → redirect
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/about']);
+      this.router.navigate(['/admin/about']);
     }
 
     this.form = this.fb.group({
@@ -99,7 +99,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
     this.authService.login(username, password).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/about']);
+        this.router.navigate(['/admin/about']);
       },
       error: (err: Error) => {
         this.loading  = false;

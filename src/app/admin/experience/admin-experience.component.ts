@@ -14,11 +14,9 @@ import {
   FormArray,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import * as THREE from 'three';
 import { AdminExperienceService } from '../../core/services/admin-experience.service';
 import { ExperienceDTO } from '../../core/models/experience-dto.model';
-import { AuthService } from '../../core/services/auth.service';
 
 type FormMode = 'list' | 'create' | 'edit';
 type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -26,7 +24,7 @@ type ApiStatus = 'idle' | 'loading' | 'success' | 'error';
 @Component({
   selector: 'app-admin-experience',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './admin-experience.component.html',
   styleUrls: ['./admin-experience.component.scss'],
 })
@@ -59,7 +57,6 @@ export class AdminExperienceComponent implements OnInit, AfterViewInit, OnDestro
   constructor(
     private fb: FormBuilder,
     private expService: AdminExperienceService,
-    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -209,7 +206,6 @@ export class AdminExperienceComponent implements OnInit, AfterViewInit, OnDestro
     });
   }
 
-  logout(): void { this.authService.logout(); }
 
   // ── Helpers ────────────────────────────────────────────────
 

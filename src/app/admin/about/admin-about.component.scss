@@ -16,6 +16,15 @@
   --transition:    0.2s ease;
 }
 
+/* ── Page shell ───────────────────────────────────────────────────────────── */
+.admin-page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  background: var(--clr-bg);
+  color: var(--clr-text);
+  font-family: 'Inter', system-ui, sans-serif;
+}
 /* ── Canvas background ──────────────────────────────────────────────────── */
 .bg-canvas {
   position: fixed;
@@ -23,17 +32,6 @@
   z-index: 0;
 }
 
-/* ── Page shell ─────────────────────────────────────────────────────────── */
-.admin-shell {
-  position: relative;
-  z-index: 1;
-  min-height: 100vh;
-  background: var(--clr-bg);
-  color: var(--clr-text);
-  font-family: 'Inter', system-ui, sans-serif;
-  display: flex;
-  flex-direction: column;
-}
 
 /* ── Top navigation ─────────────────────────────────────────────────────── */
 .admin-nav {
