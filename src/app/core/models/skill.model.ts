@@ -1,4 +1,4 @@
-export type SkillCategory = 'All' | 'FE' | 'BE' | 'DSA' | 'DevOps' | 'DB' | 'Tools';
+export type SkillCategory = string;
 
 export interface Skill {
   name: string;

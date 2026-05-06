@@ -7,8 +7,8 @@ import { ProjectDTO } from '../models/project-dto.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminProjectService {
-  private readonly adminBase = `${environment.apiBaseUrl}/admin/project`;
-  private readonly publicBase = `${environment.apiBaseUrl}/project`;
+  private readonly adminBase = `${environment.apiBaseUrl}/admin/projects`;
+  private readonly publicBase = `${environment.apiBaseUrl}/projects`;
 
   constructor(private http: HttpClient) {}
 

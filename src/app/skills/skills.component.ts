@@ -9,12 +9,11 @@ import {
 import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 import { SkillsService } from '../core/services/skills.service';
-import { Skill, SkillCategory } from '../core/models/skill.model';
+import { Skill } from '../core/models/skill.model';
 
 interface CategoryTab {
-  key: SkillCategory;
+  key: string;
   label: string;
-  icon: string;
 }
 
 @Component({
@@ -30,18 +29,9 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
   allSkills: Skill[] = [];
   filteredSkills: Skill[] = [];
   loading = true;
-  activeCategory: SkillCategory = 'All';
+  activeCategory = 'All';
+  categories: CategoryTab[] = [];
   hoveredIndex: number | null = null;
-
-  readonly categories: CategoryTab[] = [
-    { key: 'All',    label: 'All',      icon: '⚡' },
-    { key: 'FE',     label: 'Frontend', icon: '🖥️' },
-    { key: 'BE',     label: 'Backend',  icon: '⚙️' },
-    { key: 'DB',     label: 'Database', icon: '🗄️' },
-    { key: 'DevOps', label: 'DevOps',   icon: '🚀' },
-    { key: 'DSA',    label: 'DSA',      icon: '🧠' },
-    { key: 'Tools',  label: 'Tools',    icon: '🛠️' },
-  ];
 
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
@@ -58,6 +48,12 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
       next: (data) => {
         this.allSkills = data;
         this.filteredSkills = data;
+        // Build categories dynamically from the data
+        const unique = [...new Set(data.map(s => s.category))].sort();
+        this.categories = [
+          { key: 'All', label: 'All' },
+          ...unique.map(c => ({ key: c, label: c })),
+        ];
         this.loading = false;
       },
       error: () => { this.loading = false; },
@@ -78,7 +74,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     window.removeEventListener('resize', this.onResize.bind(this));
   }
 
-  selectCategory(cat: SkillCategory): void {
+  selectCategory(cat: string): void {
     this.activeCategory = cat;
     this.filteredSkills = cat === 'All'
       ? this.allSkills
@@ -91,7 +87,7 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
     return Math.round(sum / this.filteredSkills.length);
   }
 
-  countFor(cat: SkillCategory): number {
+  countFor(cat: string): number {
     return cat === 'All'
       ? this.allSkills.length
       : this.allSkills.filter((s) => s.category === cat).length;
