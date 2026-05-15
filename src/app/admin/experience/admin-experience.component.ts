@@ -152,9 +152,14 @@ export class AdminExperienceComponent implements OnInit, AfterViewInit, OnDestro
       return;
     }
 
-    const payload: ExperienceDTO = this.form.value;
-    this.saveStatus = 'loading';
+    const formVal = this.form.value;
+    const payload: ExperienceDTO = {
+      ...formVal,
+      endDate: formVal.endDate?.trim() || null,
+    };
+
     this.clearMessages();
+    this.saveStatus = 'loading';
 
     if (this.mode === 'create') {
       this.expService.createExperience(payload).subscribe({

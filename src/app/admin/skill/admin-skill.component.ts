@@ -153,8 +153,8 @@ export class AdminSkillComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     const payload: SkillDTO = this.form.value;
-    this.saveStatus = 'loading';
     this.clearMessages();
+    this.saveStatus = 'loading';
 
     if (this.mode === 'create') {
       this.skillService.createSkill(payload).subscribe({

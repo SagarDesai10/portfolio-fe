@@ -153,9 +153,15 @@ export class AdminEducationComponent implements OnInit, AfterViewInit, OnDestroy
       return;
     }
 
-    const payload: EducationDTO = this.form.value;
-    this.saveStatus = 'loading';
+    const formVal = this.form.value;
+    const payload: EducationDTO = {
+      ...formVal,
+      endYear: formVal.endYear ?? null,
+      marks:   formVal.marks?.trim() || null,
+    };
+
     this.clearMessages();
+    this.saveStatus = 'loading';
 
     if (this.mode === 'create') {
       this.eduService.createEducation(payload).subscribe({

@@ -135,8 +135,8 @@ export class AdminCertificateComponent implements OnInit, AfterViewInit, OnDestr
     }
 
     const payload: CertificateDTO = this.form.value;
-    this.saveStatus = 'loading';
     this.clearMessages();
+    this.saveStatus = 'loading';
 
     if (this.mode === 'create') {
       this.certService.createCertificate(payload).subscribe({

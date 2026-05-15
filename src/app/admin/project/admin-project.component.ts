@@ -165,8 +165,8 @@ export class AdminProjectComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     const payload: ProjectDTO = this.form.value;
-    this.saveStatus = 'loading';
     this.clearMessages();
+    this.saveStatus = 'loading';
 
     if (this.mode === 'create') {
       this.projectService.createProject(payload).subscribe({

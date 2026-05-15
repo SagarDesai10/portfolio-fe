@@ -134,8 +134,8 @@ export class AdminSocialLinkComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     const payload: SocialDTO = this.form.value;
-    this.saveStatus = 'loading';
     this.clearMessages();
+    this.saveStatus = 'loading';
 
     if (this.mode === 'create') {
       this.socialService.createSocialLink(payload).subscribe({
