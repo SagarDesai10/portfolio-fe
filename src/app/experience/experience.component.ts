@@ -86,7 +86,7 @@ export class ExperienceComponent implements OnInit, AfterViewInit, OnDestroy {
     const parts: string[] = [];
     if (years > 0) parts.push(`${years} yr${years > 1 ? 's' : ''}`);
     if (months > 0) parts.push(`${months} mo${months > 1 ? 's' : ''}`);
-    return parts.join(' ') || '< 1 mo';
+    return parts.join(' ');
   }
 
   // ── Three.js ──────────────────────────────────────────────

@@ -8,7 +8,7 @@ import { SkillDTO } from '../models/skill-dto.model';
 @Injectable({ providedIn: 'root' })
 export class AdminSkillService {
   private readonly adminBase = `${environment.apiBaseUrl}/admin/skill`;
-  private readonly publicBase = `${environment.apiBaseUrl}/skill`;
+  private readonly publicBase = `${environment.apiBaseUrl}/skills`;
 
   constructor(private http: HttpClient) {}
 
