@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 import { SkillsService } from '../core/services/skills.service';
 import { Skill } from '../core/models/skill.model';
+import { Title, Meta } from '@angular/platform-browser';
 
 interface CategoryTab {
   key: string;
@@ -41,9 +42,19 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
   private clock = new THREE.Clock();
   private mouse = new THREE.Vector2(0, 0);
 
-  constructor(private skillsService: SkillsService) {}
+  constructor(
+    private skillsService: SkillsService,
+    private title: Title,
+    private meta: Meta
+  ) {}
 
   ngOnInit(): void {
+    this.title.setTitle('Sagar Desai | Technical Skills & Core Technologies');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'A comprehensive overview of Sagar Desai\'s engineering skills and core tech stack, including Angular, Node.js, Spring Boot, SQL, and DevOps tools.'
+    });
+
     this.skillsService.getSkills().subscribe({
       next: (data) => {
         this.allSkills = data;
@@ -96,8 +107,25 @@ export class SkillsComponent implements OnInit, AfterViewInit, OnDestroy {
   stars(n: number): number[] { return Array(n).fill(0); }
   emptyStars(n: number): number[] { return Array(5 - n).fill(0); }
 
-  isEmoji(img: string): boolean {
-    return !img.startsWith('http') && !img.startsWith('data:');
+  isEmoji(img: string | null | undefined): boolean {
+    if (!img) return false;
+    const trimmed = img.trim();
+    if (trimmed.startsWith('http') || trimmed.startsWith('data:')) return false;
+    return trimmed.length > 0 && trimmed.length <= 4;
+  }
+
+  hasValidImage(img: string | null | undefined): boolean {
+    if (!img) return false;
+    const trimmed = img.trim();
+    return trimmed.startsWith('http') || trimmed.startsWith('data:');
+  }
+
+  isFallback(img: string | null | undefined): boolean {
+    return !this.hasValidImage(img) && !this.isEmoji(img);
+  }
+
+  getFallbackText(skill: Skill): string {
+    return skill.name ? skill.name.charAt(0).toUpperCase() : '⚙️';
   }
 
   trackByName(_: number, s: Skill): string { return s.name; }

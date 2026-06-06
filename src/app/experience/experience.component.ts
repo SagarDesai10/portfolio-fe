@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 import { ExperienceService } from '../core/services/experience.service';
 import { ExperienceRecord } from '../core/models/experience.model';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-experience',
@@ -32,9 +33,19 @@ export class ExperienceComponent implements OnInit, AfterViewInit, OnDestroy {
   private animationId!: number;
   private mouse = new THREE.Vector2(0, 0);
 
-  constructor(private experienceService: ExperienceService) {}
+  constructor(
+    private experienceService: ExperienceService,
+    private title: Title,
+    private meta: Meta
+  ) {}
 
   ngOnInit(): void {
+    this.title.setTitle('Sagar Desai | Professional Experience - Full Stack Developer');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Explore Sagar Desai\'s software engineering roles, professional experience, accomplishments, and tech stack details.'
+    });
+
     this.experienceService.getExperience().subscribe({
       next: (data) => {
         this.experiences = data;

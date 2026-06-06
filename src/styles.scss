@@ -1,1 +1,107 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================================
+   Google Font Import (Plus Jakarta Sans - Sleek & Premium)
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+/* ============================================================
+   Global Theme Variable Overrides
+   ============================================================ */
+:root {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --clr-bg: #090514;
+  --clr-primary: #7c3aed;
+  --clr-secondary: #06b6d4;
+  --clr-accent: #a855f7;
+}
+
+/* ============================================================
+   Global Reset & Base Rules
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  background-color: var(--clr-bg);
+  color: #f1f5f9;
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Premium Text Selection Colors */
+::selection {
+  background: rgba(124, 58, 237, 0.3);
+  color: #ffffff;
+}
+::-moz-selection {
+  background: rgba(124, 58, 237, 0.3);
+  color: #ffffff;
+}
+
+/* ============================================================
+   Custom Glow Scrollbar
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #05020a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--clr-primary) 0%, var(--clr-secondary) 100%);
+  border-radius: 99px;
+  border: 2px solid #05020a;
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--clr-accent) 0%, var(--clr-secondary) 100%);
+}
+
+/* ============================================================
+   Global Interactions & Micro-Animations
+   ============================================================ */
+a, button {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  font-family: var(--font-sans);
+}
+
+/* Glow Card Animation & Hover */
+.glass {
+  transition: 
+    transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+    box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+    border-color 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+
+  &:hover {
+    transform: translateY(-6px) scale(1.015) !important;
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.55),
+      0 0 40px rgba(124, 58, 237, 0.15) !important;
+    border-color: rgba(124, 58, 237, 0.35) !important;
+  }
+}
+
+/* Smooth Navigation Highlight active link */
+.nav-link {
+  transition: all 0.3s ease;
+  &:hover {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Glowing text highlight utility */
+.glow-text-primary {
+  text-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+}
+
+.glow-text-secondary {
+  text-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+}

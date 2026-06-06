@@ -49,9 +49,9 @@
   text-decoration: none;
   font-size: 1.15rem;
   font-weight: 800;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: inherit;
   letter-spacing: -0.02em;
-
+  
   &__bracket {
     color: var(--clr-primary);
     opacity: 0.7;
@@ -86,7 +86,7 @@
   text-decoration: none;
   font-size: 0.88rem;
   font-weight: 500;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: inherit;
   transition: color var(--transition), background var(--transition);
 
   &::after {

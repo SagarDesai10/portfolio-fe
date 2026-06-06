@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 import { ProjectService } from '../core/services/project.service';
 import { Project } from '../core/models/project.model';
+import { Title, Meta } from '@angular/platform-browser';
 
 interface CategoryTab {
   key: string;
@@ -40,9 +41,19 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
   private clock = new THREE.Clock();
   private mouse = new THREE.Vector2(0, 0);
 
-  constructor(private projectService: ProjectService) {}
+  constructor(
+    private projectService: ProjectService,
+    private title: Title,
+    private meta: Meta
+  ) {}
 
   ngOnInit(): void {
+    this.title.setTitle('Sagar Desai | Software Engineering Showcase');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Browse Sagar Desai\'s development project portfolio, featuring personal application builds, open-source repositories, and live project links.'
+    });
+
     this.projectService.getProjects().subscribe({
       next: (data) => {
         this.allProjects = data;

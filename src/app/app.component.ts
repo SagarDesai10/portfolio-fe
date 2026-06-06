@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
+import { PreloaderComponent } from './shared/preloader/preloader.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, CommonModule, HeaderComponent, FooterComponent, PreloaderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

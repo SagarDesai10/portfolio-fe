@@ -1,0 +1,90 @@
+<div class="preloader-overlay" [class.fade-out]="isFadingOut" *ngIf="isVisible">
+  <!-- Interactive Physics Canvas Background -->
+  <canvas #particleCanvas class="particles-bg" 
+          (mousemove)="onMouseMove($event)" 
+          (mouseleave)="onMouseLeave()" 
+          (click)="onCanvasClick($event)">
+  </canvas>
+
+  <div class="preloader-container">
+    <!-- Main glassmorphism card -->
+    <div class="preloader-card glass">
+      
+      <!-- Glowing header branding -->
+      <div class="card-header">
+        <div class="branding-logo">
+          <span class="logo-bracket">&lt;</span>
+          <span class="logo-text">SD</span>
+          <span class="logo-bracket">/&gt;</span>
+        </div>
+        <h1 class="welcome-title">Sagar Desai</h1>
+        <p class="subtitle">Full Stack Portfolio</p>
+      </div>
+
+      <!-- Pulsing Orb Loader Component -->
+      <div class="orb-container">
+        <div class="pulse-ring ring-1"></div>
+        <div class="pulse-ring ring-2"></div>
+        <div class="glowing-orb">
+          <div class="orb-core"></div>
+        </div>
+      </div>
+
+      <!-- Simulated & Real-Time Progress -->
+      <div class="progress-section">
+        <div class="progress-meta">
+          <span class="status-msg">
+            <span class="pulse-dot"></span>
+            Waking up Render backend...
+          </span>
+          <span class="percentage">{{ progress | number:'1.0-0' }}%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" [style.width.%]="progress"></div>
+        </div>
+        <p class="server-explanation">
+          Render's free tier sleeps after 15m of inactivity. Please wait up to 45 seconds while it boots.
+        </p>
+      </div>
+
+      <!-- Engaging Tech Trends Component -->
+      <div class="quote-widget" *ngIf="quotes[currentQuoteIndex] as q">
+        <div class="quote-icon">⚡</div>
+        <div class="quote-content">
+          <p class="quote-header">Tech Trend & Market Update</p>
+          <p class="quote-text">{{ q.text }}</p>
+          <p class="quote-author">Scope: {{ q.author }}</p>
+        </div>
+      </div>
+
+      <!-- Mock Server Boot Terminal -->
+      <div class="terminal-container">
+        <div class="terminal-header">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <span class="terminal-title">server_boot_sequence.sh</span>
+        </div>
+        <div class="terminal-body">
+          <div *ngFor="let log of bootLogs" class="log-line" 
+               [class.running]="log.status === 'running'" 
+               [class.success]="log.status === 'success'">
+            <span class="log-icon">
+              <span *ngIf="log.status === 'pending'" class="bullet-pending">○</span>
+              <span *ngIf="log.status === 'running'" class="bullet-running">⚡</span>
+              <span *ngIf="log.status === 'success'" class="bullet-success">✔</span>
+            </span>
+            <span class="log-text">{{ log.message }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive tip & skip button -->
+      <div class="card-footer">
+        <span class="interactive-tip">💡 Tip: Click anywhere to launch glowing particles!</span>
+        <button class="skip-btn" (click)="skipPreloader()">Skip to site</button>
+      </div>
+
+    </div>
+  </div>
+</div>
