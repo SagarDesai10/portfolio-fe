@@ -1,0 +1,55 @@
+<div class="admin-layout" [class.sidebar-collapsed]="!sidebarOpen">
+
+  <!-- ══ Sidebar ══════════════════════════════════════════════ -->
+  <aside class="admin-sidebar">
+
+    <div class="sidebar-brand">
+      <span class="brand-icon">⚙️</span>
+      <span class="brand-text">Admin Panel</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a
+        *ngFor="let item of navItems"
+        class="sidebar-link"
+        [routerLink]="item.route"
+        routerLinkActive="sidebar-link--active"
+      >
+        <span class="link-icon">{{ item.icon }}</span>
+        <span class="link-label">{{ item.label }}</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a routerLink="/about" class="sidebar-link sidebar-link--muted">
+        <span class="link-icon">🌐</span>
+        <span class="link-label">View Site</span>
+      </a>
+      <button class="btn-logout" (click)="logout()">
+        <span class="link-icon">🚪</span>
+        <span class="link-label">Logout</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ══ Main area ════════════════════════════════════════════ -->
+  <div class="admin-body">
+
+    <!-- Top bar -->
+    <header class="admin-topbar">
+      <button class="topbar-toggle" (click)="toggleSidebar()" title="Toggle sidebar">
+        <span></span><span></span><span></span>
+      </button>
+      <span class="topbar-title">Portfolio CMS</span>
+      <a routerLink="/about" class="topbar-btn">← View Site</a>
+    </header>
+
+    <!-- Routed content -->
+    <div class="admin-content">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+
+</div>

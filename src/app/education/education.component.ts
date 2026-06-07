@@ -13,6 +13,7 @@ import { EducationService } from '../core/services/education.service';
 import { EducationRecord } from '../core/models/education.model';
 import { CertificationService } from '../core/services/certification.service';
 import { CertificationRecord } from '../core/models/certification.model';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-education',
@@ -41,9 +42,17 @@ export class EducationComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private educationService: EducationService,
     private certificationService: CertificationService,
+    private title: Title,
+    private meta: Meta
   ) {}
 
   ngOnInit(): void {
+    this.title.setTitle('Sagar Desai | Academic Background & Certifications');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'View Sagar Desai\'s educational qualifications, computer science degree credentials, and technical engineering certifications.'
+    });
+
     forkJoin({
       education: this.educationService.getEducation(),
       certifications: this.certificationService.getCertifications(),

@@ -8,3 +8,12 @@ html, body {
   height: 100%;
   overflow-x: hidden;
 }
+
+.page-content {
+  min-height: 100vh;
+
+  &--with-header {
+    padding-top: 64px; /* reserve space for the fixed header */
+  }
+}
+

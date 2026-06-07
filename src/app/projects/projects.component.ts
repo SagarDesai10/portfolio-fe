@@ -9,12 +9,12 @@ import {
 import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 import { ProjectService } from '../core/services/project.service';
-import { Project, ProjectCategory } from '../core/models/project.model';
+import { Project } from '../core/models/project.model';
+import { Title, Meta } from '@angular/platform-browser';
 
 interface CategoryTab {
-  key: ProjectCategory;
+  key: string;
   label: string;
-  icon: string;
 }
 
 @Component({
@@ -30,15 +30,8 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
   allProjects: Project[] = [];
   filteredProjects: Project[] = [];
   loading = true;
-  activeCategory: ProjectCategory = 'All';
-
-  readonly categories: CategoryTab[] = [
-    { key: 'All',        label: 'All',        icon: '🗂️' },
-    { key: 'Full Stack', label: 'Full Stack',  icon: '⚡' },
-    { key: 'FE',         label: 'Frontend',    icon: '🖥️' },
-    { key: 'BE',         label: 'Backend',     icon: '⚙️' },
-    { key: 'POC',        label: 'POC',         icon: '🔬' },
-  ];
+  activeCategory = 'All';
+  categories: CategoryTab[] = [];
 
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
@@ -48,13 +41,29 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
   private clock = new THREE.Clock();
   private mouse = new THREE.Vector2(0, 0);
 
-  constructor(private projectService: ProjectService) {}
+  constructor(
+    private projectService: ProjectService,
+    private title: Title,
+    private meta: Meta
+  ) {}
 
   ngOnInit(): void {
+    this.title.setTitle('Sagar Desai | Software Engineering Showcase');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Browse Sagar Desai\'s development project portfolio, featuring personal application builds, open-source repositories, and live project links.'
+    });
+
     this.projectService.getProjects().subscribe({
       next: (data) => {
         this.allProjects = data;
         this.filteredProjects = data;
+        // Build categories dynamically from the data
+        const unique = [...new Set(data.map(p => p.category))].sort();
+        this.categories = [
+          { key: 'All', label: 'All' },
+          ...unique.map(c => ({ key: c, label: c })),
+        ];
         this.loading = false;
       },
       error: () => { this.loading = false; },
@@ -75,27 +84,21 @@ export class ProjectsComponent implements OnInit, AfterViewInit, OnDestroy {
     window.removeEventListener('resize', this.onResize.bind(this));
   }
 
-  selectCategory(cat: ProjectCategory): void {
+  selectCategory(cat: string): void {
     this.activeCategory = cat;
     this.filteredProjects = cat === 'All'
       ? this.allProjects
       : this.allProjects.filter((p) => p.category === cat);
   }
 
-  countFor(cat: ProjectCategory): number {
+  countFor(cat: string): number {
     return cat === 'All'
       ? this.allProjects.length
       : this.allProjects.filter((p) => p.category === cat).length;
   }
 
-  getCategoryClass(cat: ProjectCategory): string {
-    const map: Record<string, string> = {
-      'Full Stack': 'full-stack',
-      FE: 'fe',
-      BE: 'be',
-      POC: 'poc',
-    };
-    return map[cat] ?? 'all';
+  getCategoryClass(cat: string): string {
+    return cat.toLowerCase().replace(/\s+/g, '-');
   }
 
   trackByName(_: number, p: Project): string { return p.name; }

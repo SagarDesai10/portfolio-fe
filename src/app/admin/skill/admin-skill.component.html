@@ -1,0 +1,175 @@
+<div class="admin-page">
+  <canvas #bgCanvas class="bg-canvas"></canvas>
+
+  <main class="admin-main">
+
+    <!-- ── Alerts ─────────────────────────────────────────── -->
+    <div *ngIf="successMsg" class="alert alert--success">✅ {{ successMsg }}</div>
+    <div *ngIf="errorMsg"   class="alert alert--error">⚠️ {{ errorMsg }}</div>
+
+    <!-- ══════════════ LIST MODE ══════════════ -->
+    <ng-container *ngIf="mode === 'list'">
+
+      <!-- Loading -->
+      <div *ngIf="fetchStatus === 'loading'" class="state-box">
+        <div class="spinner"></div>
+        <p class="state-box__sub">Loading skills…</p>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="fetchStatus === 'error'" class="state-box glass">
+        <div class="state-box__icon">⚠️</div>
+        <p class="state-box__title">Failed to load skills</p>
+        <button class="btn-primary" (click)="load()">Retry</button>
+      </div>
+
+      <!-- List -->
+      <ng-container *ngIf="fetchStatus === 'success'">
+
+        <div class="list-header">
+          <h2 class="list-title">
+            Skills <span class="list-count">{{ skills.length }}</span>
+          </h2>
+          <button class="btn-primary" (click)="enterCreate()">+ Add Skill</button>
+        </div>
+
+        <!-- Category filter tabs -->
+        <div *ngIf="skills.length > 0" class="filter-tabs">
+          <button
+            *ngFor="let cat of categories"
+            class="filter-tab"
+            [class.filter-tab--active]="activeCategory === cat"
+            (click)="applyFilter(cat)"
+          >{{ cat }}</button>
+        </div>
+
+        <!-- Empty -->
+        <div *ngIf="skills.length === 0" class="state-box glass">
+          <div class="state-box__icon">⭐</div>
+          <p class="state-box__title">No skills yet</p>
+          <p class="state-box__sub">Add your first skill to get started.</p>
+          <button class="btn-primary" (click)="enterCreate()">+ Add Skill</button>
+        </div>
+
+        <!-- Cards grid -->
+        <div *ngIf="filteredSkills.length > 0" class="skill-grid">
+          <div *ngFor="let item of filteredSkills" class="skill-card glass">
+
+            <div class="skill-card__top">
+              <img
+                *ngIf="item.img"
+                [src]="item.img"
+                [alt]="item.name"
+                class="skill-card__icon"
+                onerror="this.style.display='none'"
+              />
+              <div *ngIf="!item.img" class="skill-card__icon-fallback">
+                {{ item.name.charAt(0) }}
+              </div>
+              <div class="skill-card__actions">
+                <button class="btn-icon btn-icon--edit" (click)="enterEdit(item)" title="Edit">✏️</button>
+                <button
+                  class="btn-icon btn-icon--delete"
+                  (click)="confirmDelete(item)"
+                  [disabled]="deletingId === item.id"
+                  title="Delete"
+                >
+                  <span *ngIf="deletingId !== item.id">🗑️</span>
+                  <span *ngIf="deletingId === item.id"><span class="btn-spinner"></span></span>
+                </button>
+              </div>
+            </div>
+
+            <p class="skill-card__name">{{ item.name }}</p>
+            <span class="skill-card__category">{{ item.category }}</span>
+
+            <div class="star-row">
+              <span
+                *ngFor="let filled of starsArray(item.stars); let i = index"
+                class="star"
+                [class.star--filled]="filled === 1"
+              >★</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Filtered empty -->
+        <div *ngIf="skills.length > 0 && filteredSkills.length === 0" class="state-box">
+          <p class="state-box__sub">No skills in this category.</p>
+        </div>
+
+      </ng-container>
+    </ng-container>
+
+    <!-- ══════════════ CREATE / EDIT MODE ══════════════ -->
+    <div *ngIf="mode === 'create' || mode === 'edit'" class="form-card glass">
+
+      <div class="form-card-header">
+        <h2>{{ mode === 'create' ? '➕ Add Skill' : '✏️ Edit Skill' }}</h2>
+        <button class="btn-ghost" (click)="cancelForm()">✕ Cancel</button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="admin-form">
+
+        <!-- Row 1: name / category -->
+        <div class="form-row">
+          <div class="field-group" [class.field-group--error]="form.get('name')?.invalid && form.get('name')?.touched">
+            <label class="field-label">Skill Name *</label>
+            <input class="field-input" formControlName="name" placeholder="Angular" />
+            <p *ngIf="fieldError('name')" class="field-error">{{ fieldError('name') }}</p>
+          </div>
+          <div class="field-group" [class.field-group--error]="form.get('category')?.invalid && form.get('category')?.touched">
+            <label class="field-label">Category *</label>
+            <input class="field-input" formControlName="category" placeholder="Frontend / Backend / DevOps…" />
+            <p *ngIf="fieldError('category')" class="field-error">{{ fieldError('category') }}</p>
+          </div>
+        </div>
+
+        <!-- Row 2: img / stars -->
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">Icon URL <span class="optional">(optional — devicon CDN etc.)</span></label>
+            <input class="field-input" formControlName="img" placeholder="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/…" />
+          </div>
+          <div class="field-group" [class.field-group--error]="form.get('stars')?.invalid && form.get('stars')?.touched">
+            <label class="field-label">Stars (1 – 5) *</label>
+            <div class="star-picker">
+              <button
+                *ngFor="let s of starRange"
+                type="button"
+                class="star-btn"
+                [class.star-btn--active]="(form.get('stars')?.value ?? 0) >= s"
+                (click)="form.get('stars')?.setValue(s)"
+              >★</button>
+              <span class="star-value">{{ form.get('stars')?.value }}/5</span>
+            </div>
+            <p *ngIf="fieldError('stars')" class="field-error">{{ fieldError('stars') }}</p>
+          </div>
+        </div>
+
+        <!-- Icon preview -->
+        <div *ngIf="form.get('img')?.value" class="icon-preview">
+          <label class="field-label">Icon Preview</label>
+          <img [src]="form.get('img')?.value" alt="preview" class="icon-preview__img" onerror="this.style.display='none'" />
+        </div>
+
+        <!-- Submit -->
+        <div class="form-footer">
+          <button type="button" class="btn-ghost" (click)="cancelForm()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="saveStatus === 'loading'">
+            <span *ngIf="saveStatus !== 'loading'">
+              {{ mode === 'create' ? '✅ Create' : '💾 Save Changes' }}
+            </span>
+            <span *ngIf="saveStatus === 'loading'" class="sending-row">
+              <span class="btn-spinner"></span>
+              {{ mode === 'create' ? 'Creating…' : 'Saving…' }}
+            </span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </main>
+</div>

@@ -1,0 +1,46 @@
+<header class="site-header" [class.site-header--scrolled]="scrolled">
+  <div class="header-inner">
+
+    <!-- Brand -->
+    <a routerLink="/about" class="brand" (click)="closeMenu()">
+      <span class="brand__bracket">&lt;</span>
+      <span class="brand__name">Sagar</span>
+      <span class="brand__accent">Desai</span>
+      <span class="brand__bracket">/&gt;</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="desktop-nav">
+      <a
+        *ngFor="let link of navLinks"
+        [routerLink]="link.path"
+        routerLinkActive="nav-link--active"
+        class="nav-link"
+      >{{ link.label }}</a>
+    </nav>
+
+    <!-- Hamburger (mobile) -->
+    <button
+      class="hamburger"
+      [class.hamburger--open]="menuOpen"
+      (click)="toggleMenu()"
+      aria-label="Toggle navigation"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+  </div>
+
+  <!-- Mobile drawer -->
+  <nav class="mobile-nav" [class.mobile-nav--open]="menuOpen">
+    <a
+      *ngFor="let link of navLinks"
+      [routerLink]="link.path"
+      routerLinkActive="nav-link--active"
+      class="nav-link"
+      (click)="closeMenu()"
+    >{{ link.label }}</a>
+  </nav>
+</header>

@@ -1,0 +1,93 @@
+<div class="login-wrapper">
+  <!-- Three.js background -->
+  <canvas #bgCanvas class="bg-canvas"></canvas>
+
+  <!-- Centered card -->
+  <div class="login-card glass">
+
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand-icon">🔐</div>
+      <h1 class="brand-title">Portfolio Admin</h1>
+      <p class="brand-sub">Sign in to manage your portfolio</p>
+    </div>
+
+    <!-- Error banner -->
+    <div *ngIf="errorMsg" class="error-banner" role="alert">
+      <span class="error-icon">⚠️</span>
+      <span>{{ errorMsg }}</span>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="login-form">
+
+      <!-- Username -->
+      <div class="field-group" [class.field-group--error]="username.invalid && username.touched">
+        <label class="field-label" for="username">Username</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input
+            id="username"
+            type="text"
+            class="field-input"
+            formControlName="username"
+            placeholder="Enter your username"
+            autocomplete="username"
+            [attr.aria-describedby]="username.invalid && username.touched ? 'username-err' : null"
+          />
+        </div>
+        <p *ngIf="username.invalid && username.touched" id="username-err" class="field-error">
+          {{ usernameError }}
+        </p>
+      </div>
+
+      <!-- Password -->
+      <div class="field-group" [class.field-group--error]="password.invalid && password.touched">
+        <label class="field-label" for="password">Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            class="field-input"
+            formControlName="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            [attr.aria-describedby]="password.invalid && password.touched ? 'password-err' : null"
+          />
+          <button
+            type="button"
+            class="toggle-pw"
+            (click)="togglePassword()"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+          >
+            {{ showPassword ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        <p *ngIf="password.invalid && password.touched" id="password-err" class="field-error">
+          {{ passwordError }}
+        </p>
+      </div>
+
+      <!-- Session note -->
+      <p class="session-note">
+        <span>🕐</span> Session expires in <strong>30 minutes</strong> after login
+      </p>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="btn-submit"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">Sign In →</span>
+        <span *ngIf="loading" class="sending-row">
+          <span class="btn-spinner"></span>
+          Authenticating…
+        </span>
+      </button>
+
+    </form>
+
+  </div>
+</div>

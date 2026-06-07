@@ -27,7 +27,6 @@
         [attr.aria-selected]="activeCategory === cat.key"
         role="tab"
       >
-        <span class="tab-icon">{{ cat.icon }}</span>
         <span class="tab-label">{{ cat.label }}</span>
         <span class="tab-count">{{ countFor(cat.key) }}</span>
       </button>
@@ -42,19 +41,22 @@
       >
         <!-- Icon -->
         <div class="skill-icon-wrap">
+          <!-- 1. Valid Image URL -->
           <img
-            *ngIf="!isEmoji(skill.img)"
+            *ngIf="hasValidImage(skill.img)"
             [src]="skill.img"
             [alt]="skill.name"
             class="skill-img"
             loading="lazy"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
           />
-          <!-- Fallback shown if image errors -->
-          <div class="skill-emoji-fallback" [style.display]="'none'">
-            {{ skill.name.charAt(0) }}
-          </div>
+          
+          <!-- 2. Emoji / short text -->
           <span *ngIf="isEmoji(skill.img)" class="skill-emoji">{{ skill.img }}</span>
+
+          <!-- 3. Fallback Initial Badge -->
+          <div *ngIf="isFallback(skill.img)" class="skill-emoji-fallback">
+            {{ getFallbackText(skill) }}
+          </div>
         </div>
 
         <!-- Name -->

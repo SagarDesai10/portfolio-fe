@@ -1,0 +1,178 @@
+<div class="admin-page">
+  <canvas #bgCanvas class="bg-canvas"></canvas>
+
+  <main class="admin-main">
+
+    <!-- ── Alerts ─────────────────────────────────────────── -->
+    <div *ngIf="successMsg" class="alert alert--success">✅ {{ successMsg }}</div>
+    <div *ngIf="errorMsg"   class="alert alert--error">⚠️ {{ errorMsg }}</div>
+
+    <!-- ══════════════ LIST MODE ══════════════ -->
+    <ng-container *ngIf="mode === 'list'">
+
+      <!-- Loading -->
+      <div *ngIf="fetchStatus === 'loading'" class="state-box">
+        <div class="spinner"></div>
+        <p class="state-box__sub">Loading education records…</p>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="fetchStatus === 'error'" class="state-box glass">
+        <div class="state-box__icon">⚠️</div>
+        <p class="state-box__title">Failed to load education records</p>
+        <button class="btn-primary" (click)="load()">Retry</button>
+      </div>
+
+      <!-- List -->
+      <ng-container *ngIf="fetchStatus === 'success'">
+
+        <div class="list-header">
+          <h2 class="list-title">
+            Education <span class="list-count">{{ education.length }}</span>
+          </h2>
+          <button class="btn-primary" (click)="enterCreate()">+ Add Record</button>
+        </div>
+
+        <!-- Empty -->
+        <div *ngIf="education.length === 0" class="state-box glass">
+          <div class="state-box__icon">🎓</div>
+          <p class="state-box__title">No education records yet</p>
+          <p class="state-box__sub">Add your first education entry to get started.</p>
+          <button class="btn-primary" (click)="enterCreate()">+ Add Record</button>
+        </div>
+
+        <!-- Cards -->
+        <div *ngIf="education.length > 0" class="edu-list">
+          <div *ngFor="let item of education" class="edu-card glass">
+
+            <div class="edu-card__header">
+              <div class="edu-card__info">
+                <h3 class="edu-card__stream">{{ item.stream }}</h3>
+                <p class="edu-card__college">{{ item.clgName }}</p>
+                <div class="edu-card__meta">
+                  <span class="meta-badge">{{ item.startYear }} — {{ item.endYear ?? 'Present' }}</span>
+                  <span *ngIf="item.marks" class="meta-badge meta-badge--marks">{{ item.marks }}</span>
+                </div>
+              </div>
+              <div class="edu-card__actions">
+                <button
+                  class="btn-icon btn-icon--edit"
+                  (click)="enterEdit(item)"
+                  title="Edit"
+                >✏️ Edit</button>
+                <button
+                  class="btn-icon btn-icon--delete"
+                  (click)="confirmDelete(item)"
+                  [disabled]="deletingId === item.id"
+                  title="Delete"
+                >
+                  <span *ngIf="deletingId !== item.id">🗑️ Delete</span>
+                  <span *ngIf="deletingId === item.id" class="sending-row">
+                    <span class="btn-spinner"></span>Deleting…
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <ul *ngIf="item.about?.length" class="about-list">
+              <li *ngFor="let p of item.about" class="about-list-item">
+                <span class="about-dot"></span>{{ p }}
+              </li>
+            </ul>
+
+          </div>
+        </div>
+
+      </ng-container>
+    </ng-container>
+
+    <!-- ══════════════ CREATE / EDIT MODE ══════════════ -->
+    <div *ngIf="mode === 'create' || mode === 'edit'" class="form-card glass">
+
+      <div class="form-card-header">
+        <h2>{{ mode === 'create' ? '➕ Add Education' : '✏️ Edit Education' }}</h2>
+        <button class="btn-ghost" (click)="cancelForm()">✕ Cancel</button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="admin-form">
+
+        <!-- Row 1: stream / college -->
+        <div class="form-row">
+          <div class="field-group" [class.field-group--error]="form.get('stream')?.invalid && form.get('stream')?.touched">
+            <label class="field-label">Stream / Degree *</label>
+            <input class="field-input" formControlName="stream" placeholder="B.E. Computer Engineering" />
+            <p *ngIf="fieldError('stream')" class="field-error">{{ fieldError('stream') }}</p>
+          </div>
+          <div class="field-group" [class.field-group--error]="form.get('clgName')?.invalid && form.get('clgName')?.touched">
+            <label class="field-label">College / Institution *</label>
+            <input class="field-input" formControlName="clgName" placeholder="Pune University" />
+            <p *ngIf="fieldError('clgName')" class="field-error">{{ fieldError('clgName') }}</p>
+          </div>
+        </div>
+
+        <!-- Row 2: startYear / endYear / marks -->
+        <div class="form-row form-row--3">
+          <div class="field-group" [class.field-group--error]="form.get('startYear')?.invalid && form.get('startYear')?.touched">
+            <label class="field-label">Start Year *</label>
+            <input class="field-input" type="number" formControlName="startYear" placeholder="2018" min="1900" max="2100" />
+            <p *ngIf="fieldError('startYear')" class="field-error">{{ fieldError('startYear') }}</p>
+          </div>
+          <div class="field-group" [class.field-group--error]="form.get('endYear')?.invalid && form.get('endYear')?.touched">
+            <label class="field-label">End Year <span class="optional">(blank = Present)</span></label>
+            <input class="field-input" type="number" formControlName="endYear" placeholder="2022" min="1900" max="2100" />
+            <p *ngIf="fieldError('endYear')" class="field-error">{{ fieldError('endYear') }}</p>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Marks / Grade <span class="optional">(optional)</span></label>
+            <input class="field-input" formControlName="marks" placeholder="CGPA: 9.0 / 10" />
+          </div>
+        </div>
+
+        <!-- About points -->
+        <div class="field-group">
+          <div class="about-points-header">
+            <label class="field-label">About / Highlights *</label>
+            <button type="button" class="btn-add-point" (click)="addAboutPoint()">+ Add Point</button>
+          </div>
+          <div formArrayName="about" class="about-points-list">
+            <div
+              *ngFor="let ctrl of aboutArray.controls; let i = index"
+              class="about-point-row"
+            >
+              <span class="point-num">{{ i + 1 }}</span>
+              <textarea
+                class="field-input field-textarea"
+                [formControlName]="i"
+                placeholder="Describe something about this education…"
+                rows="2"
+              ></textarea>
+              <button
+                type="button"
+                class="btn-remove-point"
+                (click)="removeAboutPoint(i)"
+                [disabled]="aboutArray.length === 1"
+                title="Remove"
+              >✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="form-footer">
+          <button type="button" class="btn-ghost" (click)="cancelForm()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="saveStatus === 'loading'">
+            <span *ngIf="saveStatus !== 'loading'">
+              {{ mode === 'create' ? '✅ Create' : '💾 Save Changes' }}
+            </span>
+            <span *ngIf="saveStatus === 'loading'" class="sending-row">
+              <span class="btn-spinner"></span>
+              {{ mode === 'create' ? 'Creating…' : 'Saving…' }}
+            </span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </main>
+</div>

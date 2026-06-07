@@ -1,0 +1,9 @@
+{
+  "/api": {
+    "target": "https://portfolio-be-ywga.onrender.com",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": { "^/api": "" },
+    "logLevel": "info"
+  }
+}

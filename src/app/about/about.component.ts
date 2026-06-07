@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 import { AboutService } from '../core/services/about.service';
 import { AboutData } from '../core/models/about.model';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-about',
@@ -31,9 +32,19 @@ export class AboutComponent implements OnInit, AfterViewInit, OnDestroy {
   private animationId!: number;
   private mouse = new THREE.Vector2(0, 0);
 
-  constructor(private aboutService: AboutService) {}
+  constructor(
+    private aboutService: AboutService,
+    private title: Title,
+    private meta: Meta
+  ) {}
 
   ngOnInit(): void {
+    this.title.setTitle('Sagar Desai | Portfolio - Full Stack Software Developer');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Welcome to Sagar Desai\'s portfolio. Discover full stack software engineering projects, core technologies, and professional experience.'
+    });
+
     this.aboutService.getAbout().subscribe({
       next: (data) => {
         this.about = data;

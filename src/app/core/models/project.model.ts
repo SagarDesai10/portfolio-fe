@@ -1,4 +1,4 @@
-export type ProjectCategory = 'All' | 'FE' | 'BE' | 'Full Stack' | 'POC';
+export type ProjectCategory = string;
 
 export interface Project {
   name: string;

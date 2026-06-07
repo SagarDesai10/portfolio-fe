@@ -1,0 +1,138 @@
+<div class="admin-page">
+  <canvas #bgCanvas class="bg-canvas"></canvas>
+
+  <main class="admin-main">
+
+    <!-- ── Alerts ─────────────────────────────────────────── -->
+    <div *ngIf="successMsg" class="alert alert--success">✅ {{ successMsg }}</div>
+    <div *ngIf="errorMsg"   class="alert alert--error">⚠️ {{ errorMsg }}</div>
+
+    <!-- ══════════════ LIST MODE ══════════════ -->
+    <ng-container *ngIf="mode === 'list'">
+
+      <!-- Loading -->
+      <div *ngIf="fetchStatus === 'loading'" class="state-box">
+        <div class="spinner"></div>
+        <p class="state-box__sub">Loading social links…</p>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="fetchStatus === 'error'" class="state-box glass">
+        <div class="state-box__icon">⚠️</div>
+        <p class="state-box__title">Failed to load social links</p>
+        <button class="btn-primary" (click)="load()">Retry</button>
+      </div>
+
+      <!-- List -->
+      <ng-container *ngIf="fetchStatus === 'success'">
+
+        <div class="list-header">
+          <h2 class="list-title">
+            Social Links <span class="list-count">{{ socialLinks.length }}</span>
+          </h2>
+          <button class="btn-primary" (click)="enterCreate()">+ Add Link</button>
+        </div>
+
+        <!-- Empty -->
+        <div *ngIf="socialLinks.length === 0" class="state-box glass">
+          <div class="state-box__icon">🔗</div>
+          <p class="state-box__title">No social links yet</p>
+          <p class="state-box__sub">Add your first social link to get started.</p>
+          <button class="btn-primary" (click)="enterCreate()">+ Add Link</button>
+        </div>
+
+        <!-- Cards -->
+        <div *ngIf="socialLinks.length > 0" class="social-grid">
+          <div *ngFor="let item of socialLinks" class="social-card glass">
+
+            <div class="social-card__top">
+              <img
+                *ngIf="item.img"
+                [src]="item.img"
+                [alt]="item.name"
+                class="social-card__icon"
+                onerror="this.style.display='none'"
+              />
+              <div *ngIf="!item.img" class="social-card__icon-fallback">
+                {{ item.name.charAt(0) }}
+              </div>
+              <div class="social-card__actions">
+                <button class="btn-icon btn-icon--edit" (click)="enterEdit(item)" title="Edit">✏️</button>
+                <button
+                  class="btn-icon btn-icon--delete"
+                  (click)="confirmDelete(item)"
+                  [disabled]="deletingId === item.id"
+                  title="Delete"
+                >
+                  <span *ngIf="deletingId !== item.id">🗑️</span>
+                  <span *ngIf="deletingId === item.id"><span class="btn-spinner"></span></span>
+                </button>
+              </div>
+            </div>
+
+            <p class="social-card__name">{{ item.name }}</p>
+            <a [href]="item.link" target="_blank" rel="noopener noreferrer" class="social-card__link">
+              🔗 {{ item.link | slice:0:40 }}{{ item.link.length > 40 ? '…' : '' }}
+            </a>
+
+          </div>
+        </div>
+
+      </ng-container>
+    </ng-container>
+
+    <!-- ══════════════ CREATE / EDIT MODE ══════════════ -->
+    <div *ngIf="mode === 'create' || mode === 'edit'" class="form-card glass">
+
+      <div class="form-card-header">
+        <h2>{{ mode === 'create' ? '➕ Add Social Link' : '✏️ Edit Social Link' }}</h2>
+        <button class="btn-ghost" (click)="cancelForm()">✕ Cancel</button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="admin-form">
+
+        <!-- Row 1: name / link -->
+        <div class="form-row">
+          <div class="field-group" [class.field-group--error]="form.get('name')?.invalid && form.get('name')?.touched">
+            <label class="field-label">Platform Name *</label>
+            <input class="field-input" formControlName="name" placeholder="LinkedIn" />
+            <p *ngIf="fieldError('name')" class="field-error">{{ fieldError('name') }}</p>
+          </div>
+          <div class="field-group" [class.field-group--error]="form.get('link')?.invalid && form.get('link')?.touched">
+            <label class="field-label">Profile URL *</label>
+            <input class="field-input" formControlName="link" placeholder="https://linkedin.com/in/…" />
+            <p *ngIf="fieldError('link')" class="field-error">{{ fieldError('link') }}</p>
+          </div>
+        </div>
+
+        <!-- Icon URL -->
+        <div class="field-group">
+          <label class="field-label">Icon URL <span class="optional">(optional)</span></label>
+          <input class="field-input" formControlName="img" placeholder="https://cdn.jsdelivr.net/…" />
+        </div>
+
+        <!-- Icon preview -->
+        <div *ngIf="form.get('img')?.value" class="icon-preview">
+          <label class="field-label">Preview</label>
+          <img [src]="form.get('img')?.value" alt="preview" class="icon-preview__img" onerror="this.style.display='none'" />
+        </div>
+
+        <!-- Submit -->
+        <div class="form-footer">
+          <button type="button" class="btn-ghost" (click)="cancelForm()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="saveStatus === 'loading'">
+            <span *ngIf="saveStatus !== 'loading'">
+              {{ mode === 'create' ? '✅ Create' : '💾 Save Changes' }}
+            </span>
+            <span *ngIf="saveStatus === 'loading'" class="sending-row">
+              <span class="btn-spinner"></span>
+              {{ mode === 'create' ? 'Creating…' : 'Saving…' }}
+            </span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </main>
+</div>

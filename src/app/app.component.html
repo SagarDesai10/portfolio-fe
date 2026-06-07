@@ -1,1 +1,9 @@
-<router-outlet />
+<app-preloader *ngIf="showShell"></app-preloader>
+
+<app-header *ngIf="showShell"></app-header>
+
+<div class="page-content" [class.page-content--with-header]="showShell">
+  <router-outlet />
+</div>
+
+<app-footer *ngIf="showShell"></app-footer>
